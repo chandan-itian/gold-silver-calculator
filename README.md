@@ -98,6 +98,10 @@ Rates shown are indicative and based on live international spot prices plus the 
 
 ## 👤 Author
 
-**Chandan Kumar** ([@chandan-itian](https://github.com/chandan-itian))
+**Chandan Raj** ([@chandan-itian](https://github.com/chandan-itian))
 
 Made for buyers and learners in India who want to understand exactly how a gold or silver jewellery bill is calculated.
+
+---
+
+<p align="center"><strong>Made with love ❤️ by Chandan Raj</strong></p>

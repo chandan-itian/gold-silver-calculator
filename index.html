@@ -871,6 +871,29 @@
       text-decoration: underline;
     }
 
+    /* Credit line — blinking / beating heart */
+    .credit-line {
+      width: 100%;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      padding-top: 12px;
+    }
+
+    .heart-beat {
+      display: inline-block;
+      color: #e11d48;
+      animation: heart-beat 1.2s ease-in-out infinite;
+    }
+
+    @keyframes heart-beat {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      25% { transform: scale(1.35); opacity: 0.85; }
+      45% { transform: scale(0.92); }
+      60% { transform: scale(1.18); }
+    }
+
     /* Toast */
     .toast {
       position: fixed;
@@ -1265,6 +1288,7 @@
         <a href="https://razorpay.com/learn/gst-rates-on-gold/" target="_blank" rel="noopener">GST (3%/5%)</a>
       </div>
       <div>लाइव API: Gold-API.com (XAU/XAG) · ExchangeRate-API / Frankfurter (USD/INR)</div>
+      <div class="credit-line">Made with love <span class="heart-beat">❤️</span> by <strong>Chandan Raj</strong></div>
     </footer>
   </div>
 
