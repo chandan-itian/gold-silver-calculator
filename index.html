@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>गोल्ड और सिल्वर लाइव बुलियन एवं ज्वैलरी बिल कैलकुलेटर (भारत)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --surface-dim: #f1f3f5;
+      --surface-hover: #e8ecf1;
+      --ink: #111827;
+      --ink-muted: #5f6672;
+      --border: #e5e7eb;
+      --primary: #2563eb;
+      --primary-soft: #e8f1ff;
+      --primary-ink: #1d4ed8;
+      --gold-accent: #b45309;
+      --gold-soft: #fef3c7;
+      --green: #059669;
+      --green-soft: #d1fae5;
+      --amber: #d97706;
+      --violet: #7c3aed;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 6px 20px rgba(15, 23, 42, 0.06);
+      --r-sm: 10px;
+      --r-md: 16px;
+      --r-lg: 20px;
+      --r-full: 999px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f1115;
+      --surface: #181b21;
+      --surface-dim: #22262f;
+      --surface-hover: #2b303b;
+      --ink: #f3f4f6;
+      --ink-muted: #9ca3af;
+      --border: #2a2f3a;
+      --primary: #60a5fa;
+      --primary-soft: #172554;
+      --primary-ink: #93c5fd;
+      --gold-accent: #f59e0b;
+      --gold-soft: #3b2a10;
+      --green: #34d399;
+      --green-soft: #064e3b;
+      --amber: #fbbf24;
+      --violet: #a78bfa;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans Devanagari', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding: 20px 16px 48px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .app-shell {
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+    }
+
+    /* Header */
+    .app-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .brand-block h1 {
+      font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    .brand-block p {
+      font-size: 0.875rem;
+      color: var(--ink-muted);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--r-full);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-pill:hover { background: var(--surface-dim); }
+    .btn-pill:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-ink);
+      border-color: var(--primary-ink);
+    }
+
+    /* Live API & City Benchmark Bar */
+    .live-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .live-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .live-status-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      box-shadow: 0 0 0 3px var(--green-soft);
+    }
+
+    .pulse-dot.is-fallback {
+      background: var(--amber);
+      box-shadow: 0 0 0 3px var(--gold-soft);
+    }
+
+    .live-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .live-tile {
+      background: var(--surface-dim);
+      border-radius: var(--r-sm);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .live-tile-label {
+      font-size: 0.74rem;
+      color: var(--ink-muted);
+      font-weight: 600;
+    }
+
+    .live-tile-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .live-tile-sub {
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+    }
+
+    .city-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .city-rates-inline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.84rem;
+    }
+
+    .city-rate-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold-soft);
+      color: var(--gold-accent);
+      padding: 4px 10px;
+      border-radius: var(--r-full);
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    /* Segmented Controls */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .segmented {
+      display: inline-flex;
+      background: var(--surface-dim);
+      padding: 4px;
+      border-radius: var(--r-full);
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .seg-btn {
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      padding: 8px 15px;
+      border-radius: var(--r-full);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .seg-btn.is-active {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Top KPI Strip */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--r-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+
+    .kpi-card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kpi-card.is-highlight {
+      background: linear-gradient(135deg, var(--primary-soft) 0%, var(--surface) 100%);
+      border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+
+    .kpi-sub {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    /* Section Titles */
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--r-full);
+      font-size: 0.76rem;
+      font-weight: 600;
+      background: var(--primary-soft);
+      color: var(--primary-ink);
+    }
+
+    .badge-gold {
+      background: var(--gold-soft);
+      color: var(--gold-accent);
+    }
+
+    /* Luminous-style Sliders */
+    .sliders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px 24px;
+    }
+
+    .slider-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: opacity 0.2s ease;
+    }
+
+    .slider-field.is-disabled {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .slider-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .slider-label {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .slider-hint {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    input[type="range"].lumi-range {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 8px;
+      border-radius: var(--r-full);
+      background: linear-gradient(
+        to right,
+        var(--primary) 0%,
+        var(--primary) var(--progress, 50%),
+        var(--surface-dim) var(--progress, 50%),
+        var(--surface-dim) 100%
+      );
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"].lumi-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 6px;
+      height: 22px;
+      border-radius: 4px;
+      background: var(--primary);
+      border: 2px solid var(--surface);
+      box-shadow: 0 0 0 1.5px var(--primary);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    input[type="range"].lumi-range::-webkit-slider-thumb:hover {
+      transform: scaleY(1.12);
+    }
+
+    input[type="range"].lumi-range::-moz-range-thumb {
+      width: 6px;
+      height: 22px;
+      border-radius: 4px;
+      background: var(--primary);
+      border: 2px solid var(--surface);
+      box-shadow: 0 0 0 1.5px var(--primary);
+      cursor: pointer;
+    }
+
+    .val-input-wrap {
+      display: inline-flex;
+      align-items: center;
+      background: var(--surface-dim);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 6px 10px;
+      min-width: 96px;
+      justify-content: flex-end;
+      gap: 3px;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .val-input-wrap:focus-within {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+
+    .val-prefix, .val-suffix {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+      user-select: none;
+    }
+
+    .val-input {
+      width: 66px;
+      border: none;
+      background: transparent;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: right;
+      outline: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .val-input::-webkit-inner-spin-button,
+    .val-input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Purity Live Rate Strip */
+    .purity-section {
+      margin: 20px 0;
+    }
+
+    .purity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .purity-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 16px 18px;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      color: inherit;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .purity-card:hover {
+      border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
+      transform: translateY(-1px);
+    }
+
+    .purity-card.is-selected {
+      border-color: var(--primary);
+      background: linear-gradient(180deg, var(--primary-soft) 0%, var(--surface) 45%);
+      box-shadow: var(--shadow-md);
+    }
+
+    .purity-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .purity-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .purity-mult {
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--r-full);
+      background: var(--surface-dim);
+      color: var(--ink-muted);
+    }
+
+    .purity-card.is-selected .purity-mult {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .purity-rates {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .rate-box-label {
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+    }
+
+    .rate-box-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .rate-box-sub {
+      font-size: 0.74rem;
+      color: var(--ink-muted);
+    }
+
+    /* Jewellery Calculator Two-Column Layout */
+    .jewellery-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 860px) {
+      .jewellery-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .quick-chip {
+      padding: 5px 12px;
+      border-radius: var(--r-full);
+      border: 1px solid var(--border);
+      background: var(--surface-dim);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .quick-chip:hover, .quick-chip.is-active {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--primary-ink);
+    }
+
+    .stack-gap {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .inline-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* Bill Summary Receipt */
+    .bill-card {
+      background: var(--surface);
+      border-radius: var(--r-md);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+
+    .bill-hero {
+      padding: 16px;
+      border-radius: var(--r-sm);
+      background: var(--primary-soft);
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .bill-hero-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-ink);
+    }
+
+    .bill-hero-amount {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .bill-hero-sub {
+      width: 100%;
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+    }
+
+    .bill-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 0.9rem;
+    }
+
+    .bill-row-label { color: var(--ink-muted); }
+    .bill-row-val { font-weight: 600; color: var(--ink); text-align: right; }
+
+    .bill-row.is-subtotal {
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      font-weight: 600;
+    }
+
+    .bill-row.is-subtotal .bill-row-label { color: var(--ink); }
+
+    .bill-row.is-total {
+      padding-top: 12px;
+      border-top: 2px solid var(--border);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .bill-row.is-total .bill-row-label { color: var(--ink); }
+
+    /* Proportion Bar */
+    .split-bar {
+      display: flex;
+      height: 24px;
+      border-radius: 8px;
+      overflow: hidden;
+      gap: 2px;
+      margin: 14px 0 10px;
+      background: var(--surface-dim);
+    }
+
+    .split-seg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #ffffff;
+      transition: width 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Step-by-step live formula box */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .step-item {
+      background: var(--surface-dim);
+      border-radius: var(--r-sm);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .step-num {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--primary-ink);
+    }
+
+    .step-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .step-math {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      word-break: break-word;
+    }
+
+    /* Beginner Hints & Standards Guide */
+    .hints-section {
+      margin-top: 20px;
+    }
+
+    .hints-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .hint-card {
+      background: var(--surface-dim);
+      border-radius: var(--r-sm);
+      padding: 14px 16px;
+      border-left: 4px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hint-card.is-gold {
+      border-left-color: var(--amber);
+    }
+
+    .hint-card.is-green {
+      border-left-color: var(--green);
+    }
+
+    .hint-card.is-violet {
+      border-left-color: var(--violet);
+    }
+
+    .hint-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .hint-formula {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary-ink);
+      align-self: flex-start;
+    }
+
+    .hint-body {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      line-height: 1.55;
+    }
+
+    /* Footer */
+    .app-footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .app-footer a {
+      color: var(--primary-ink);
+      text-decoration: none;
+    }
+
+    .app-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #111827;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: var(--r-full);
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 999;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-block">
+        <h1>गोल्ड एवं सिल्वर लाइव रेट व ज्वैलरी बिल कैलकुलेटर</h1>
+        <p>लाइव अंतर्राष्ट्रीय स्पॉट (USD/oz), डॉलर रेट, भारत इम्पोर्ट ड्यूटी, शुद्धता स्टैंडर्ड और बिगनर गाइड</p>
+      </div>
+      <div class="header-actions">
+        <button id="btn-reset" type="button" class="btn-pill">डिफ़ॉल्ट रेट रीसेट करें</button>
+        <button id="btn-theme" type="button" class="btn-pill">डार्क मोड</button>
+      </div>
+    </header>
+
+    <!-- Live API Ticker & India City Benchmark (Patna / Delhi) -->
+    <section class="live-banner" aria-label="लाइव मार्केट टिकर और शहर बेंचमार्क">
+      <div class="live-top-row">
+        <div class="live-status-wrap">
+          <span id="live-dot" class="pulse-dot is-fallback"></span>
+          <span id="live-status-text">लाइव API से जुड़ रहा है... (सत्यापित संदर्भ: 26 नवंबर 2026)</span>
+        </div>
+        <div class="live-controls">
+          <button id="btn-auto-refresh" type="button" class="btn-pill">ऑटो-रिफ्रेश: चालू (<span id="refresh-countdown" class="num">60</span>s)</button>
+          <button id="btn-refresh-now" type="button" class="btn-pill btn-primary">अभी लाइव रिफ्रेश करें</button>
+        </div>
+      </div>
+
+      <div class="live-grid">
+        <div class="live-tile">
+          <span class="live-tile-label">लाइव गोल्ड स्पॉट (XAU / USD)</span>
+          <span class="live-tile-val num" id="ticker-gold">$3,588.00 / oz</span>
+          <span class="live-tile-sub" id="ticker-gold-src">स्रोत: Kitco संदर्भ / Gold-API</span>
+        </div>
+        <div class="live-tile">
+          <span class="live-tile-label">लाइव सिल्वर स्पॉट (XAG / USD)</span>
+          <span class="live-tile-val num" id="ticker-silver">$41.28 / oz</span>
+          <span class="live-tile-sub" id="ticker-silver-src">स्रोत: Kitco संदर्भ / Gold-API</span>
+        </div>
+        <div class="live-tile">
+          <span class="live-tile-label">लाइव USD से INR (1 डॉलर)</span>
+          <span class="live-tile-val num" id="ticker-fx">₹92.24</span>
+          <span class="live-tile-sub" id="ticker-fx-src">स्रोत: लाइव FX API / संदर्भ</span>
+        </div>
+        <div class="live-tile">
+          <span class="live-tile-label">अंतिम अपडेट समय</span>
+          <span class="live-tile-val num" id="ticker-time">26 Nov 2026</span>
+          <span class="live-tile-sub">कैलकुलेटर से ऑटो-सिंक</span>
+        </div>
+      </div>
+
+      <div class="city-bar">
+        <div class="segmented" role="group" aria-label="शहर चुनें">
+          <button id="btn-city-patna" type="button" class="seg-btn is-active" style="padding: 6px 14px; font-size: 0.82rem;">पटना (बिहार) बेंचमार्क</button>
+          <button id="btn-city-delhi" type="button" class="seg-btn" style="padding: 6px 14px; font-size: 0.82rem;">दिल्ली बेंचमार्क</button>
+        </div>
+        <div class="city-rates-inline" id="city-rates-display">
+          <span class="city-rate-pill num" id="city-24k">24K: ₹12,333/g (₹1,23,330/10g)</span>
+          <span class="city-rate-pill num" id="city-22k">22K: ₹11,305/g (₹1,13,050/10g)</span>
+          <span class="city-rate-pill num" id="city-18k">18K: ₹9,250/g (₹92,500/10g)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Mode Toggles -->
+    <div class="toolbar">
+      <div class="segmented" role="group" aria-label="धातु चुनें">
+        <button id="btn-gold" type="button" class="seg-btn is-active">सोना (Gold)</button>
+        <button id="btn-silver" type="button" class="seg-btn">चांदी (Silver)</button>
+      </div>
+      <div class="segmented" role="group" aria-label="टैक्स मोड चुनें">
+        <button id="btn-tax-off" type="button" class="seg-btn">केवल स्पॉट (बिना टैक्स)</button>
+        <button id="btn-tax-on" type="button" class="seg-btn is-active">ड्यूटी + 3% GST सहित</button>
+      </div>
+    </div>
+
+    <!-- Top Bullion KPIs -->
+    <section class="kpi-grid" aria-label="मुख्य बुलियन आंकड़े">
+      <div class="card kpi-card">
+        <div class="kpi-label">INR प्रति ट्रॉय औंस (स्पॉट)</div>
+        <div class="kpi-value num" id="kpi-oz">₹3,30,957</div>
+        <div class="kpi-sub num" id="kpi-oz-sub">$3,588.00 × ₹92.24</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label" id="kpi-base-lbl">24K बेस स्पॉट (बिना ड्यूटी/GST)</div>
+        <div class="kpi-value num" id="kpi-base">₹10,641/ग्राम</div>
+        <div class="kpi-sub num" id="kpi-base-sub">₹1,06,405 प्रति 10 ग्राम</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label" id="kpi-exgst-lbl">24K भारत रेट (ड्यूटी सहित, बिना GST)</div>
+        <div class="kpi-value num" id="kpi-exgst">₹12,237/ग्राम</div>
+        <div class="kpi-sub num" id="kpi-exgst-sub">₹1,22,366 प्रति 10 ग्राम</div>
+      </div>
+      <div class="card kpi-card is-highlight">
+        <div class="kpi-label" id="kpi-incgst-lbl">24K भारत बुलियन रेट (ड्यूटी + 3% GST)</div>
+        <div class="kpi-value num" id="kpi-incgst">₹12,604/ग्राम</div>
+        <div class="kpi-sub num" id="kpi-incgst-sub">₹1,26,037 प्रति 10 ग्राम</div>
+      </div>
+    </section>
+
+    <!-- Section 1: International Spot, FX & Import Duty Sliders -->
+    <section class="card">
+      <div class="section-head">
+        <h2>1. अंतर्राष्ट्रीय दर, डॉलर रेट और भारत इम्पोर्ट ड्यूटी सेट करें</h2>
+        <span class="badge num" id="badge-duty-total">कुल ड्यूटी: 15% (10% BCD + 5% AIDC)</span>
+      </div>
+      <div class="sliders-grid">
+        <div class="slider-field">
+          <div class="slider-top">
+            <label class="slider-label" id="lbl-spot" for="sl-spot">गोल्ड स्पॉट प्राइस (USD / ट्रॉय औंस)</label>
+            <span class="slider-hint">स्टैंडर्ड: 1 ट्रॉय औंस = 31.1035 ग्राम</span>
+          </div>
+          <div class="slider-row">
+            <input id="sl-spot" class="lumi-range" type="range" min="1500" max="6000" step="1" value="3588">
+            <div class="val-input-wrap">
+              <span class="val-prefix">$</span>
+              <input id="in-spot" class="val-input" type="number" step="0.01" value="3588.00" aria-label="स्पॉट प्राइस USD">
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-field">
+          <div class="slider-top">
+            <label class="slider-label" for="sl-fx">USD से INR प्रति डॉलर (₹)</label>
+            <span class="slider-hint">हिंट: डॉलर बढ़ने से भारत में सोना महंगा होता है</span>
+          </div>
+          <div class="slider-row">
+            <input id="sl-fx" class="lumi-range" type="range" min="75" max="110" step="0.02" value="92.24">
+            <div class="val-input-wrap">
+              <span class="val-prefix">₹</span>
+              <input id="in-fx" class="val-input" type="number" step="0.01" value="92.24" aria-label="USD से INR दर">
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-field" id="wrap-bcd">
+          <div class="slider-top">
+            <label class="slider-label" for="sl-bcd">बेसिक कस्टम ड्यूटी (BCD %)</label>
+            <span class="slider-hint">13 मई 2026 से भारत में: 10%</span>
+          </div>
+          <div class="slider-row">
+            <input id="sl-bcd" class="lumi-range" type="range" min="0" max="20" step="0.5" value="10">
+            <div class="val-input-wrap">
+              <input id="in-bcd" class="val-input" type="number" step="0.5" min="0" max="50" value="10" aria-label="BCD प्रतिशत">
+              <span class="val-suffix">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-field" id="wrap-aidc">
+          <div class="slider-top">
+            <label class="slider-label" for="sl-aidc">कृषि अवसंरचना सेस (AIDC %)</label>
+            <span class="slider-hint">13 मई 2026 से भारत में: 5%</span>
+          </div>
+          <div class="slider-row">
+            <input id="sl-aidc" class="lumi-range" type="range" min="0" max="10" step="0.5" value="5">
+            <div class="val-input-wrap">
+              <input id="in-aidc" class="val-input" type="number" step="0.5" min="0" max="25" value="5" aria-label="AIDC प्रतिशत">
+              <span class="val-suffix">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Live Purity Rate Bar (24K / 22K / 18K or 999 / 925 / 800) -->
+    <section class="purity-section">
+      <div class="section-head">
+        <h2 id="purity-section-title">2. शुद्धता के अनुसार लाइव रेट (बिना GST बनाम 3% GST सहित)</h2>
+        <span class="badge badge-gold">किसी भी कार्ड पर क्लिक करें → नीचे ज्वैलरी बिल अपडेट होगा</span>
+      </div>
+      <div class="purity-grid" id="purity-cards"></div>
+    </section>
+
+    <!-- Section 3: Jewellery Bill & Making Charge Customizer -->
+    <section class="jewellery-layout">
+      <!-- Left: Jewellery Controls -->
+      <div class="card stack-gap">
+        <div class="section-head" style="margin-bottom: 0;">
+          <h2>3. ज्वैलरी वज़न, मेकिंग चार्ज और GST कस्टमाइज़ करें</h2>
+          <span class="badge" id="badge-selected-purity">चयनित: 22 कैरेट</span>
+        </div>
+
+        <!-- Category / Purity Selector -->
+        <div>
+          <div class="slider-label" style="margin-bottom: 8px;">कैटेगरी / शुद्धता चुनें (मल्टीप्लायर सहित)</div>
+          <div class="segmented" id="jewellery-purity-group" role="group" aria-label="ज्वैलरी शुद्धता चुनें"></div>
+        </div>
+
+        <!-- Weight Slider -->
+        <div class="slider-field">
+          <div class="slider-top">
+            <label class="slider-label" for="sl-weight">ज्वैलरी का नेट वज़न (ग्राम में)</label>
+            <span class="slider-hint">हिंट: नग/मोती का वज़न घटाकर केवल शुद्ध धातु का वज़न</span>
+          </div>
+          <div class="slider-row">
+            <input id="sl-weight" class="lumi-range" type="range" min="1" max="200" step="1" value="10">
+            <div class="val-input-wrap">
+              <input id="in-weight" class="val-input" type="number" step="0.1" min="0.1" max="10000" value="10" aria-label="नेट वज़न ग्राम में">
+              <span class="val-suffix">g</span>
+            </div>
+          </div>
+          <div class="chip-row" id="weight-presets"></div>
+        </div>
+
+        <!-- Making Charge Mode & Slider -->
+        <div class="slider-field">
+          <div class="inline-controls">
+            <label class="slider-label" for="sl-making">मेकिंग चार्ज (Making Charges)</label>
+            <div class="segmented" role="group" aria-label="मेकिंग चार्ज का तरीका">
+              <button id="btn-mc-pct" type="button" class="seg-btn is-active" style="padding: 5px 12px; font-size: 0.78rem;">प्रतिशत (%)</button>
+              <button id="btn-mc-flat" type="button" class="seg-btn" style="padding: 5px 12px; font-size: 0.78rem;">फ्लैट (₹/ग्राम)</button>
+            </div>
+          </div>
+          <div class="slider-row">
+            <input id="sl-making" class="lumi-range" type="range" min="0" max="35" step="0.5" value="12">
+            <div class="val-input-wrap">
+              <span class="val-prefix" id="mc-prefix"></span>
+              <input id="in-making" class="val-input" type="number" step="0.5" min="0" max="50000" value="12" aria-label="मेकिंग चार्ज">
+              <span class="val-suffix" id="mc-suffix">%</span>
+            </div>
+          </div>
+          <span class="slider-hint" id="mc-hint">सोने के बिना-GST मूल्य का 12%</span>
+        </div>
+
+        <!-- GST Billing Mode -->
+        <div class="slider-field" id="wrap-gst-mode">
+          <div class="slider-label">मेकिंग चार्ज के बाद GST नियम चुनें</div>
+          <div class="segmented" role="group" aria-label="GST नियम चुनें">
+            <button id="btn-gst-comp" type="button" class="seg-btn is-active" style="padding: 6px 12px; font-size: 0.8rem;">रेडीमेड ज्वैलरी (पूरे बिल पर 3% GST)</button>
+            <button id="btn-gst-job" type="button" class="seg-btn" style="padding: 6px 12px; font-size: 0.8rem;">जॉब-वर्क (धातु 3% + मेकिंग 5% GST)</button>
+          </div>
+          <span class="slider-hint" id="gst-mode-hint">रेडीमेड ज्वैलरी में धातु मूल्य + मेकिंग चार्ज के कुल योग पर 3% GST लगता है (डबल GST नहीं)।</span>
+        </div>
+      </div>
+
+      <!-- Right: Live Final Bill Receipt -->
+      <div class="bill-card">
+        <div class="section-head">
+          <h2>अंतिम ज्वैलरी बिल (Final Price)</h2>
+          <button id="btn-copy" type="button" class="btn-pill btn-primary">बिल कॉपी करें</button>
+        </div>
+
+        <div class="bill-hero">
+          <span class="bill-hero-label">कुल देय राशि (Final Payable)</span>
+          <span class="bill-hero-amount num" id="bill-final">₹1,29,398</span>
+          <span class="bill-hero-sub num" id="bill-effective">प्रभावी दर: ₹12,940/ग्राम · चयनित: 22K (10 ग्राम)</span>
+        </div>
+
+        <div class="bill-rows">
+          <div class="bill-row">
+            <span class="bill-row-label" id="bill-metal-lbl">22K सोने का मूल्य (10g × ₹11,217 बिना GST)</span>
+            <span class="bill-row-val num" id="bill-metal-val">₹1,12,169</span>
+          </div>
+          <div class="bill-row">
+            <span class="bill-row-label" id="bill-mc-lbl">मेकिंग चार्ज (12%)</span>
+            <span class="bill-row-val num" id="bill-mc-val">₹13,460</span>
+          </div>
+          <div class="bill-row is-subtotal">
+            <span class="bill-row-label">टैक्सेबल वैल्यू (उप-योग)</span>
+            <span class="bill-row-val num" id="bill-subtotal">₹1,25,629</span>
+          </div>
+          <div class="bill-row">
+            <span class="bill-row-label" id="bill-gst-lbl">GST (3% — CGST 1.5% + SGST 1.5%)</span>
+            <span class="bill-row-val num" id="bill-gst-val">₹3,769</span>
+          </div>
+          <div class="bill-row is-total">
+            <span class="bill-row-label">अंतिम बिल (कुल देय)</span>
+            <span class="bill-row-val num" id="bill-total-val">₹1,29,398</span>
+          </div>
+        </div>
+
+        <!-- Visual Price Breakdown Bar -->
+        <div>
+          <div class="kpi-label">बिल में हर हिस्से का अनुपात</div>
+          <div class="split-bar" role="img" aria-label="अंतिम बिल संरचना">
+            <div id="seg-spot" class="split-seg" style="background: #2563eb; width: 75%;">75%</div>
+            <div id="seg-duty" class="split-seg" style="background: #d97706; width: 11%;">11%</div>
+            <div id="seg-making" class="split-seg" style="background: #7c3aed; width: 11%;">11%</div>
+            <div id="seg-gst" class="split-seg" style="background: #059669; width: 3%;"></div>
+          </div>
+          <div class="legend-row">
+            <span class="legend-item"><span class="dot" style="background:#2563eb;"></span>स्पॉट बेस: <strong class="num" id="leg-spot">₹97,538</strong></span>
+            <span class="legend-item"><span class="dot" style="background:#d97706;"></span>इम्पोर्ट ड्यूटी: <strong class="num" id="leg-duty">₹14,631</strong></span>
+            <span class="legend-item"><span class="dot" style="background:#7c3aed;"></span>मेकिंग चार्ज: <strong class="num" id="leg-making">₹13,460</strong></span>
+            <span class="legend-item"><span class="dot" style="background:#059669;"></span>GST: <strong class="num" id="leg-gst">₹3,769</strong></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Live Step-by-Step Calculation Breakdown -->
+    <section class="card">
+      <div class="section-head" style="margin-bottom: 4px;">
+        <h2>4. स्टेप-बाय-स्टेप लाइव गणना (फॉर्मूला वेरिफिकेशन)</h2>
+        <span class="badge">स्लाइडर बदलते ही हर स्टेप अपडेट होता है</span>
+      </div>
+      <div class="steps-grid" id="live-steps"></div>
+    </section>
+
+    <!-- Section 5: Beginner Hints & Standard Conversion Guide -->
+    <section class="card hints-section">
+      <div class="section-head" style="margin-bottom: 4px;">
+        <h2>5. बिगनर गाइड एवं स्टैंडर्ड हिंट्स (आसान भाषा में नियम)</h2>
+        <span class="badge badge-gold">शुरुआती यूज़र के लिए सभी ज़रूरी स्टैंडर्ड</span>
+      </div>
+      <div class="hints-grid">
+        <div class="hint-card">
+          <div class="hint-title">1 ट्रॉय औंस (Troy Ounce) का स्टैंडर्ड मान</div>
+          <div class="hint-formula num">1 ट्रॉय औंस = 31.1035 ग्राम (सटीक 31.1034768g)</div>
+          <p class="hint-body">
+            सोने और चांदी का अंतर्राष्ट्रीय भाव हमेशा <strong>ट्रॉय औंस</strong> में होता है। यह सामान्य औंस (28.3495 ग्राम) से बड़ा होता है। 1 ग्राम का रेट निकालने के लिए INR प्रति ट्रॉय औंस को <strong>31.1035</strong> से भाग दिया जाता है।
+          </p>
+        </div>
+
+        <div class="hint-card is-gold">
+          <div class="hint-title">24 कैरेट से 22 कैरेट निकालने का स्टैंडर्ड</div>
+          <div class="hint-formula num">22K रेट = 24K रेट × (22 ÷ 24) = × 0.9167</div>
+          <p class="hint-body">
+            22 कैरेट सोने में <strong>91.67% शुद्ध सोना</strong> और 8.33% अन्य धातु (तांबा/चांदी) होती है ताकि गहने मज़बूत बनें। इसी कारण 22K ज्वैलरी पर <strong>BIS 916 हॉलमार्क</strong> लिखा होता है।
+          </p>
+        </div>
+
+        <div class="hint-card is-gold">
+          <div class="hint-title">24 कैरेट से 18 कैरेट निकालने का स्टैंडर्ड</div>
+          <div class="hint-formula num">18K रेट = 24K रेट × (18 ÷ 24) = × 0.7500</div>
+          <p class="hint-body">
+            18 कैरेट सोने में <strong>75% शुद्ध सोना</strong> और 25% अन्य धातु होती है। डायमंड और जड़ाऊ ज्वैलरी में 18K का इस्तेमाल होता है और इसका हॉलमार्क कोड <strong>750</strong> होता है।
+          </p>
+        </div>
+
+        <div class="hint-card is-violet">
+          <div class="hint-title">चांदी (Silver) के शुद्धता स्टैंडर्ड</div>
+          <div class="hint-formula num">999 = × 1.00 · 925 = × 0.925 · 800 = × 0.80</div>
+          <p class="hint-body">
+            निवेश के सिक्के/ईंट <strong>999 फाइन सिल्वर</strong> (99.9% शुद्ध) होते हैं, जबकि आभूषण व पायल में <strong>925 स्टर्लिंग सिल्वर</strong> (92.5% शुद्ध) सबसे लोकप्रिय मानक है।
+          </p>
+        </div>
+
+        <div class="hint-card is-green">
+          <div class="hint-title">इम्पोर्ट ड्यूटी और GST (डबल GST से बचें)</div>
+          <div class="hint-formula num">ड्यूटी 15% (10% BCD + 5% AIDC) + GST 3%</div>
+          <p class="hint-body">
+            भारत में 13 मई 2026 से इम्पोर्ट ड्यूटी <strong>15%</strong> है। रेडीमेड ज्वैलरी बिल में पहले <strong>बिना-GST रेट</strong> पर सोने की कीमत + मेकिंग चार्ज जोड़ा जाता है, फिर कुल पर <strong>3% GST</strong> लगता है। अपना सोना देकर बनवाने (जॉब-वर्क) पर मेकिंग चार्ज पर <strong>5% GST</strong> लागू होता है।
+          </p>
+        </div>
+
+        <div class="hint-card">
+          <div class="hint-title">पटना/बिहार बनाम दिल्ली रेट में अंतर क्यों?</div>
+          <div class="hint-formula num">स्पॉट + 15% ड्यूटी + लोकल प्रीमियम</div>
+          <p class="hint-body">
+            अंतर्राष्ट्रीय स्पॉट से निकाले गए भारत रेट के ऊपर हर शहर के सर्राफा बाज़ार में ट्रांसपोर्टेशन, बैंक प्रीमियम और स्थानीय मांग के अनुसार लगभग ₹50–₹150/ग्राम का मामूली अंतर रहता है।
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer with Grounded Sources -->
+    <footer class="app-footer">
+      <div>
+        डेटा स्रोत (25–26 नवंबर 2026):
+        <a href="https://www.kitco.com/charts/gold" target="_blank" rel="noopener">Kitco Gold</a> ·
+        <a href="https://www.kitco.com/charts/silver" target="_blank" rel="noopener">Kitco Silver</a> ·
+        <a href="https://www.xe.com/en-us/currencyconverter/convert/?Amount=1&From=USD&To=INR" target="_blank" rel="noopener">USD/INR</a> ·
+        <a href="https://groww.in/gold-rates/gold-rate-today-in-patna" target="_blank" rel="noopener">पटना (बिहार) रेट</a> ·
+        <a href="https://groww.in/gold-rates/gold-rate-today-in-delhi" target="_blank" rel="noopener">दिल्ली रेट</a> ·
+        <a href="https://www.mmtcpamp.com/blog/blog-detail/gold-silver-import-duty-hike" target="_blank" rel="noopener">इम्पोर्ट ड्यूटी (15%)</a> ·
+        <a href="https://razorpay.com/learn/gst-rates-on-gold/" target="_blank" rel="noopener">GST (3%/5%)</a>
+      </div>
+      <div>लाइव API: Gold-API.com (XAU/XAG) · ExchangeRate-API / Frankfurter (USD/INR)</div>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">बिल क्लिपबोर्ड पर कॉपी हो गया!</div>
+
+  <script>
+    const TROY_OZ_GRAMS = 31.1035;
+
+    const PURITY_CONFIG = {
+      gold: [
+        { key: '24K', label: '24 कैरेट (99.9%)', short: '24K', factor: 24 / 24, formulaText: '× 24 ÷ 24 (100%)' },
+        { key: '22K', label: '22 कैरेट (91.67%)', short: '22K', factor: 22 / 24, formulaText: '× 22 ÷ 24 (91.67%)' },
+        { key: '18K', label: '18 कैरेट (75.0%)', short: '18K', factor: 18 / 24, formulaText: '× 18 ÷ 24 (75.0%)' }
+      ],
+      silver: [
+        { key: '999', label: '999 फाइन सिल्वर', short: '999', factor: 1.0, formulaText: '× 1.000 (99.9%)' },
+        { key: '925', label: '925 स्टर्लिंग सिल्वर', short: '925', factor: 0.925, formulaText: '× 0.925 (92.5%)' },
+        { key: '800', label: '800 सिल्वर', short: '800', factor: 0.80, formulaText: '× 0.800 (80.0%)' }
+      ]
+    };
+
+    // Verified 26 Nov 2026 city benchmark baselines (Groww: Patna & Delhi)
+    // Local premium over raw landed 24K ex-GST rate (~₹12,237/g): Patna +₹96/g, Delhi +₹106/g
+    const CITY_BENCHMARKS = {
+      patna: { name: 'पटना (बिहार)', base24K: 12333, base22K: 11305, base18K: 9250, localPremiumPerGram: 96 },
+      delhi: { name: 'दिल्ली', base24K: 12343, base22K: 11314, base18K: 9257, localPremiumPerGram: 106 }
+    };
+
+    const DEFAULTS = {
+      metal: 'gold',
+      taxMode: 'tax_on',
+      city: 'patna',
+      spotGold: 3588.00,
+      spotSilver: 41.28,
+      usdInr: 92.24,
+      bcdPct: 10,
+      aidcPct: 5,
+      gstPct: 3,
+      purityGold: '22K',
+      puritySilver: '999',
+      weightGold: 10,
+      weightSilver: 100,
+      makingMode: 'percent',
+      makingPct: 12,
+      makingFlatGold: 650,
+      makingFlatSilver: 40,
+      gstOnMakingMode: 'composite_3'
+    };
+
+    let state = { ...DEFAULTS };
+    let liveFeed = {
+      connected: false,
+      goldUsd: DEFAULTS.spotGold,
+      silverUsd: DEFAULTS.spotSilver,
+      usdInr: DEFAULTS.usdInr,
+      lastUpdated: '26 Nov 2026 (संदर्भ)',
+      autoRefresh: true,
+      countdown: 60
+    };
+
+    const fmtINR0 = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+    const fmtINR2 = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function fmtMoney(val, isSmallUnit) {
+      if (!Number.isFinite(val)) return '₹0';
+      return isSmallUnit ? fmtINR2.format(val) : fmtINR0.format(val);
+    }
+
+    function clamp(val, min, max) {
+      return Math.min(max, Math.max(min, val));
+    }
+
+    function syncRangeVisual(rangeEl) {
+      const min = parseFloat(rangeEl.min || '0');
+      const max = parseFloat(rangeEl.max || '100');
+      const val = parseFloat(rangeEl.value || '0');
+      const pct = max > min ? clamp(((val - min) / (max - min)) * 100, 0, 100) : 0;
+      rangeEl.style.setProperty('--progress', `${pct}%`);
+    }
+
+    function getActiveSpot() {
+      return state.metal === 'gold' ? state.spotGold : state.spotSilver;
+    }
+
+    function getActiveWeight() {
+      return state.metal === 'gold' ? state.weightGold : state.weightSilver;
+    }
+
+    function getActiveMakingFlat() {
+      return state.metal === 'gold' ? state.makingFlatGold : state.makingFlatSilver;
+    }
+
+    // Core Pure Calculation Engine (zero double-GST, 100% deterministic)
+    function computeMetrics(s) {
+      const spotUsd = Math.max(0, s.metal === 'gold' ? s.spotGold : s.spotSilver);
+      const usdInr = Math.max(0, s.usdInr);
+      const dutyPct = s.taxMode === 'tax_on' ? Math.max(0, s.bcdPct + s.aidcPct) : 0;
+      const gstPct = s.taxMode === 'tax_on' ? Math.max(0, s.gstPct) : 0;
+
+      const inrPerOzSpot = spotUsd * usdInr;
+      const pureBasePerGram = inrPerOzSpot / TROY_OZ_GRAMS;
+      const pureExGstPerGram = pureBasePerGram * (1 + dutyPct / 100);
+      const pureIncGstPerGram = pureExGstPerGram * (1 + gstPct / 100);
+
+      const purityList = PURITY_CONFIG[s.metal];
+      const selKey = s.metal === 'gold' ? s.purityGold : s.puritySilver;
+      const selPurity = purityList.find(p => p.key === selKey) || purityList[0];
+
+      const weight = Math.max(0.01, s.metal === 'gold' ? s.weightGold : s.weightSilver);
+      const selBasePerGram = pureBasePerGram * selPurity.factor;
+      const selExGstPerGram = pureExGstPerGram * selPurity.factor;
+
+      const spotComponent = selBasePerGram * weight;
+      const dutyComponent = spotComponent * (dutyPct / 100);
+      const metalValueExGst = spotComponent + dutyComponent;
+
+      const makingVal = s.makingMode === 'percent'
+        ? metalValueExGst * (Math.max(0, s.makingPct) / 100)
+        : Math.max(0, s.metal === 'gold' ? s.makingFlatGold : s.makingFlatSilver) * weight;
+
+      const subtotal = metalValueExGst + makingVal;
+
+      let gstOnMetal = 0;
+      let gstOnMaking = 0;
+      let totalGst = 0;
+
+      if (s.taxMode === 'tax_on') {
+        if (s.gstOnMakingMode === 'composite_3') {
+          totalGst = subtotal * (gstPct / 100);
+          gstOnMetal = metalValueExGst * (gstPct / 100);
+          gstOnMaking = makingVal * (gstPct / 100);
+        } else {
+          gstOnMetal = metalValueExGst * (gstPct / 100);
+          gstOnMaking = makingVal * 0.05;
+          totalGst = gstOnMetal + gstOnMaking;
+        }
+      }
+
+      const finalPayable = subtotal + totalGst;
+      const effectivePerGram = weight > 0 ? finalPayable / weight : 0;
+
+      return {
+        spotUsd,
+        usdInr,
+        dutyPct,
+        gstPct,
+        inrPerOzSpot,
+        pureBasePerGram,
+        pureExGstPerGram,
+        pureIncGstPerGram,
+        selPurity,
+        weight,
+        selBasePerGram,
+        selExGstPerGram,
+        spotComponent,
+        dutyComponent,
+        metalValueExGst,
+        makingVal,
+        subtotal,
+        gstOnMetal,
+        gstOnMaking,
+        totalGst,
+        finalPayable,
+        effectivePerGram
+      };
+    }
+
+    // DOM References
+    const elBtnGold = document.getElementById('btn-gold');
+    const elBtnSilver = document.getElementById('btn-silver');
+    const elBtnTaxOn = document.getElementById('btn-tax-on');
+    const elBtnTaxOff = document.getElementById('btn-tax-off');
+    const elBtnReset = document.getElementById('btn-reset');
+    const elBtnTheme = document.getElementById('btn-theme');
+    const elBtnCopy = document.getElementById('btn-copy');
+    const elBtnCityPatna = document.getElementById('btn-city-patna');
+    const elBtnCityDelhi = document.getElementById('btn-city-delhi');
+    const elBtnAutoRefresh = document.getElementById('btn-auto-refresh');
+    const elBtnRefreshNow = document.getElementById('btn-refresh-now');
+
+    const elSlSpot = document.getElementById('sl-spot');
+    const elInSpot = document.getElementById('in-spot');
+    const elSlFx = document.getElementById('sl-fx');
+    const elInFx = document.getElementById('in-fx');
+    const elSlBcd = document.getElementById('sl-bcd');
+    const elInBcd = document.getElementById('in-bcd');
+    const elSlAidc = document.getElementById('sl-aidc');
+    const elInAidc = document.getElementById('in-aidc');
+
+    const elSlWeight = document.getElementById('sl-weight');
+    const elInWeight = document.getElementById('in-weight');
+    const elSlMaking = document.getElementById('sl-making');
+    const elInMaking = document.getElementById('in-making');
+
+    const elBtnMcPct = document.getElementById('btn-mc-pct');
+    const elBtnMcFlat = document.getElementById('btn-mc-flat');
+    const elBtnGstComp = document.getElementById('btn-gst-comp');
+    const elBtnGstJob = document.getElementById('btn-gst-job');
+
+    // Live Public CORS API Fetcher (with safe fallback)
+    async function fetchLiveRates(applyToCalculator) {
+      const statusEl = document.getElementById('live-status-text');
+      const dotEl = document.getElementById('live-dot');
+      statusEl.textContent = 'लाइव API से डेटा अपडेट हो रहा है...';
+
+      let fxSuccess = false;
+      let metalSuccess = false;
+
+      // 1. Fetch USD -> INR (ExchangeRate-API primary, Frankfurter fallback)
+      try {
+        const res = await fetch('https://open.er-api.com/v6/latest/USD', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.rates && Number.isFinite(data.rates.INR)) {
+            liveFeed.usdInr = Number(data.rates.INR.toFixed(2));
+            fxSuccess = true;
+          }
+        }
+      } catch (e) {}
+
+      if (!fxSuccess) {
+        try {
+          const res2 = await fetch('https://api.frankfurter.dev/v1/latest?base=USD&symbols=INR', { cache: 'no-store' });
+          if (res2.ok) {
+            const data2 = await res2.json();
+            if (data2 && data2.rates && Number.isFinite(data2.rates.INR)) {
+              liveFeed.usdInr = Number(data2.rates.INR.toFixed(2));
+              fxSuccess = true;
+            }
+          }
+        } catch (e) {}
+      }
+
+      // 2. Fetch Live Gold (XAU) & Silver (XAG) from keyless Gold-API
+      try {
+        const [rGold, rSilver] = await Promise.all([
+          fetch('https://api.gold-api.com/price/XAU', { cache: 'no-store' }),
+          fetch('https://api.gold-api.com/price/XAG', { cache: 'no-store' })
+        ]);
+        if (rGold.ok) {
+          const gData = await rGold.json();
+          if (gData && Number.isFinite(gData.price) && gData.price > 500) {
+            liveFeed.goldUsd = Number(gData.price.toFixed(2));
+            metalSuccess = true;
+          }
+        }
+        if (rSilver.ok) {
+          const sData = await rSilver.json();
+          if (sData && Number.isFinite(sData.price) && sData.price > 5) {
+            liveFeed.silverUsd = Number(sData.price.toFixed(2));
+            metalSuccess = true;
+          }
+        }
+      } catch (e) {}
+
+      const nowStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      if (fxSuccess || metalSuccess) {
+        liveFeed.connected = true;
+        liveFeed.lastUpdated = nowStr;
+        dotEl.classList.remove('is-fallback');
+        statusEl.textContent = (fxSuccess && metalSuccess)
+          ? 'लाइव API कनेक्टेड (Gold, Silver & USD/INR ऑटो-अपडेट)'
+          : (fxSuccess ? 'लाइव USD/INR API कनेक्टेड · बुलियन संदर्भ दर सक्रिय' : 'लाइव बुलियन API कनेक्टेड · संदर्भ FX दर सक्रिय');
+
+        if (applyToCalculator) {
+          if (metalSuccess) {
+            state.spotGold = liveFeed.goldUsd;
+            state.spotSilver = liveFeed.silverUsd;
+          }
+          if (fxSuccess) {
+            state.usdInr = liveFeed.usdInr;
+          }
+          elSlFx.value = String(clamp(state.usdInr, 75, 110));
+          elInFx.value = state.usdInr.toFixed(2);
+          configureControlsForMetal();
+        }
+      } else {
+        liveFeed.connected = false;
+        dotEl.classList.add('is-fallback');
+        statusEl.textContent = 'सत्यापित संदर्भ दर सक्रिय (26 नवंबर 2026) — ऑफलाइन/प्रीव्यू फ़ॉलबैक';
+      }
+
+      renderLiveBanner();
+      renderAll();
+    }
+
+    function renderLiveBanner() {
+      document.getElementById('ticker-gold').textContent = `$${liveFeed.goldUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / oz`;
+      document.getElementById('ticker-silver').textContent = `$${liveFeed.silverUsd.toFixed(2)} / oz`;
+      document.getElementById('ticker-fx').textContent = `₹${liveFeed.usdInr.toFixed(2)}`;
+      document.getElementById('ticker-time').textContent = liveFeed.lastUpdated;
+
+      elBtnCityPatna.classList.toggle('is-active', state.city === 'patna');
+      elBtnCityDelhi.classList.toggle('is-active', state.city === 'delhi');
+
+      const cityObj = CITY_BENCHMARKS[state.city] || CITY_BENCHMARKS.patna;
+      let r24 = cityObj.base24K;
+      let r22 = cityObj.base22K;
+      let r18 = cityObj.base18K;
+
+      if (liveFeed.connected) {
+        const landed24 = ((liveFeed.goldUsd * liveFeed.usdInr) / TROY_OZ_GRAMS) * 1.15;
+        r24 = Math.round(landed24 + cityObj.localPremiumPerGram);
+        r22 = Math.round(r24 * (22 / 24));
+        r18 = Math.round(r24 * (18 / 24));
+      }
+
+      document.getElementById('city-24k').textContent = `24K: ${fmtINR0.format(r24)}/g (${fmtINR0.format(r24 * 10)}/10g)`;
+      document.getElementById('city-22k').textContent = `22K: ${fmtINR0.format(r22)}/g (${fmtINR0.format(r22 * 10)}/10g)`;
+      document.getElementById('city-18k').textContent = `18K: ${fmtINR0.format(r18)}/g (${fmtINR0.format(r18 * 10)}/10g)`;
+    }
+
+    function configureControlsForMetal() {
+      const isGold = state.metal === 'gold';
+      document.getElementById('lbl-spot').textContent = isGold
+        ? 'गोल्ड स्पॉट प्राइस (USD / ट्रॉय औंस)'
+        : 'सिल्वर स्पॉट प्राइस (USD / ट्रॉय औंस)';
+
+      elSlSpot.min = isGold ? '1500' : '15';
+      elSlSpot.max = isGold ? '6000' : '100';
+      elSlSpot.step = isGold ? '1' : '0.05';
+      elSlSpot.value = String(clamp(getActiveSpot(), parseFloat(elSlSpot.min), parseFloat(elSlSpot.max)));
+      elInSpot.value = getActiveSpot().toFixed(2);
+
+      elSlWeight.min = '1';
+      elSlWeight.max = isGold ? '200' : '2000';
+      elSlWeight.step = isGold ? '1' : '5';
+      elSlWeight.value = String(clamp(getActiveWeight(), 1, isGold ? 200 : 2000));
+      elInWeight.value = String(getActiveWeight());
+
+      configureMakingControls();
+      renderWeightPresets();
+      renderJewelleryPurityButtons();
+    }
+
+    function configureMakingControls() {
+      const isGold = state.metal === 'gold';
+      const isPct = state.makingMode === 'percent';
+      elBtnMcPct.classList.toggle('is-active', isPct);
+      elBtnMcFlat.classList.toggle('is-active', !isPct);
+
+      if (isPct) {
+        elSlMaking.min = '0';
+        elSlMaking.max = '35';
+        elSlMaking.step = '0.5';
+        elSlMaking.value = String(clamp(state.makingPct, 0, 35));
+        elInMaking.value = String(state.makingPct);
+        document.getElementById('mc-prefix').textContent = '';
+        document.getElementById('mc-suffix').textContent = '%';
+      } else {
+        const flatMax = isGold ? 2500 : 200;
+        const flatVal = getActiveMakingFlat();
+        elSlMaking.min = '0';
+        elSlMaking.max = String(flatMax);
+        elSlMaking.step = isGold ? '10' : '1';
+        elSlMaking.value = String(clamp(flatVal, 0, flatMax));
+        elInMaking.value = String(flatVal);
+        document.getElementById('mc-prefix').textContent = '₹';
+        document.getElementById('mc-suffix').textContent = '/g';
+      }
+    }
+
+    function renderWeightPresets() {
+      const container = document.getElementById('weight-presets');
+      const presets = state.metal === 'gold' ? [5, 10, 20, 50, 100] : [10, 50, 100, 500, 1000];
+      const currentW = getActiveWeight();
+      container.innerHTML = '';
+      presets.forEach(g => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'quick-chip num' + (currentW === g ? ' is-active' : '');
+        btn.textContent = g === 1000 ? '1 किग्रा (1000g)' : `${g} ग्राम`;
+        btn.addEventListener('click', () => {
+          if (state.metal === 'gold') state.weightGold = g;
+          else state.weightSilver = g;
+          elSlWeight.value = String(clamp(g, parseFloat(elSlWeight.min), parseFloat(elSlWeight.max)));
+          elInWeight.value = String(g);
+          renderAll();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function renderJewelleryPurityButtons() {
+      const group = document.getElementById('jewellery-purity-group');
+      const list = PURITY_CONFIG[state.metal];
+      const activeKey = state.metal === 'gold' ? state.purityGold : state.puritySilver;
+      group.innerHTML = '';
+      list.forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'seg-btn' + (item.key === activeKey ? ' is-active' : '');
+        btn.style.padding = '7px 14px';
+        btn.style.fontSize = '0.82rem';
+        btn.textContent = item.label;
+        btn.addEventListener('click', () => {
+          if (state.metal === 'gold') state.purityGold = item.key;
+          else state.puritySilver = item.key;
+          renderAll();
+        });
+        group.appendChild(btn);
+      });
+    }
+
+    function renderAll() {
+      const m = computeMetrics(state);
+      const isGold = state.metal === 'gold';
+      const isTaxOn = state.taxMode === 'tax_on';
+      const pureTag = isGold ? '24K' : '999 सिल्वर';
+
+      elBtnGold.classList.toggle('is-active', isGold);
+      elBtnSilver.classList.toggle('is-active', !isGold);
+      elBtnTaxOn.classList.toggle('is-active', isTaxOn);
+      elBtnTaxOff.classList.toggle('is-active', !isTaxOn);
+      elBtnGstComp.classList.toggle('is-active', state.gstOnMakingMode === 'composite_3');
+      elBtnGstJob.classList.toggle('is-active', state.gstOnMakingMode === 'separate_5');
+
+      document.getElementById('wrap-bcd').classList.toggle('is-disabled', !isTaxOn);
+      document.getElementById('wrap-aidc').classList.toggle('is-disabled', !isTaxOn);
+      document.getElementById('wrap-gst-mode').classList.toggle('is-disabled', !isTaxOn);
+
+      [elSlSpot, elSlFx, elSlBcd, elSlAidc, elSlWeight, elSlMaking].forEach(syncRangeVisual);
+
+      document.getElementById('badge-duty-total').textContent = isTaxOn
+        ? `कुल ड्यूटी: ${m.dutyPct.toFixed(1).replace(/\.0$/, '')}% (${state.bcdPct}% BCD + ${state.aidcPct}% AIDC)`
+        : 'स्पॉट मोड: ड्यूटी 0% · GST 0%';
+
+      document.getElementById('kpi-oz').textContent = fmtINR0.format(m.inrPerOzSpot);
+      document.getElementById('kpi-oz-sub').textContent = `$${m.spotUsd.toFixed(2)} × ₹${m.usdInr.toFixed(2)}`;
+
+      document.getElementById('kpi-base-lbl').textContent = `${pureTag} बेस स्पॉट (बिना ड्यूटी/GST)`;
+      document.getElementById('kpi-base').textContent = `${fmtMoney(m.pureBasePerGram, !isGold)}/ग्राम`;
+      document.getElementById('kpi-base-sub').textContent = isGold
+        ? `${fmtINR0.format(m.pureBasePerGram * 10)} प्रति 10 ग्राम`
+        : `${fmtINR0.format(m.pureBasePerGram * 1000)} प्रति 1 किग्रा`;
+
+      document.getElementById('kpi-exgst-lbl').textContent = isTaxOn
+        ? `${pureTag} भारत रेट (ड्यूटी सहित, बिना GST)`
+        : `${pureTag} स्पॉट रेट (बिना टैक्स)`;
+      document.getElementById('kpi-exgst').textContent = `${fmtMoney(m.pureExGstPerGram, !isGold)}/ग्राम`;
+      document.getElementById('kpi-exgst-sub').textContent = isGold
+        ? `${fmtINR0.format(m.pureExGstPerGram * 10)} प्रति 10 ग्राम`
+        : `${fmtINR0.format(m.pureExGstPerGram * 1000)} प्रति 1 किग्रा`;
+
+      document.getElementById('kpi-incgst-lbl').textContent = isTaxOn
+        ? `${pureTag} बुलियन रेट (ड्यूटी + ${m.gstPct}% GST)`
+        : `${pureTag} स्पॉट रेट (बिना टैक्स)`;
+      document.getElementById('kpi-incgst').textContent = `${fmtMoney(m.pureIncGstPerGram, !isGold)}/ग्राम`;
+      document.getElementById('kpi-incgst-sub').textContent = isGold
+        ? `${fmtINR0.format(m.pureIncGstPerGram * 10)} प्रति 10 ग्राम`
+        : `${fmtINR0.format(m.pureIncGstPerGram * 1000)} प्रति 1 किग्रा`;
+
+      const purityContainer = document.getElementById('purity-cards');
+      purityContainer.innerHTML = '';
+      PURITY_CONFIG[state.metal].forEach(item => {
+        const isSel = item.key === m.selPurity.key;
+        const exGst1g = m.pureExGstPerGram * item.factor;
+        const incGst1g = exGst1g * (1 + m.gstPct / 100);
+        const bulkMult = isGold ? 10 : 1000;
+        const bulkLabel = isGold ? '10 ग्राम' : '1 किग्रा';
+
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'purity-card' + (isSel ? ' is-selected' : '');
+        card.innerHTML = `
+          <div class="purity-top">
+            <span class="purity-name">${item.label}</span>
+            <span class="purity-mult num">${item.formulaText}</span>
+          </div>
+          <div class="purity-rates">
+            <div>
+              <div class="rate-box-label">बिना GST (ज्वैलरी बेस रेट)</div>
+              <div class="rate-box-val num">${fmtMoney(exGst1g, !isGold)}/g</div>
+              <div class="rate-box-sub num">${fmtINR0.format(exGst1g * bulkMult)} / ${bulkLabel}</div>
+            </div>
+            <div>
+              <div class="rate-box-label">${isTaxOn ? `${m.gstPct}% GST सहित` : 'स्पॉट (0% टैक्स)'}</div>
+              <div class="rate-box-val num">${fmtMoney(incGst1g, !isGold)}/g</div>
+              <div class="rate-box-sub num">${fmtINR0.format(incGst1g * bulkMult)} / ${bulkLabel}</div>
+            </div>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          if (isGold) state.purityGold = item.key;
+          else state.puritySilver = item.key;
+          renderAll();
+        });
+        purityContainer.appendChild(card);
+      });
+
+      renderJewelleryPurityButtons();
+      renderWeightPresets();
+      document.getElementById('badge-selected-purity').textContent = `चयनित: ${m.selPurity.label}`;
+
+      document.getElementById('mc-hint').textContent = state.makingMode === 'percent'
+        ? `${m.selPurity.short} धातु के बिना-GST मूल्य का ${state.makingPct}% = ${fmtINR0.format(m.makingVal)}`
+        : `${fmtINR0.format(getActiveMakingFlat())}/ग्राम × ${m.weight} ग्राम = ${fmtINR0.format(m.makingVal)}`;
+
+      document.getElementById('gst-mode-hint').textContent = state.gstOnMakingMode === 'composite_3'
+        ? 'रेडीमेड ज्वैलरी में धातु मूल्य + मेकिंग चार्ज के कुल योग पर 3% GST (1.5% CGST + 1.5% SGST) लगता है।'
+        : 'जॉब-वर्क बिलिंग में धातु मूल्य पर 3% GST और अलग से मेकिंग चार्ज पर 5% GST लगता है।';
+
+      document.getElementById('bill-final').textContent = fmtINR0.format(m.finalPayable);
+      document.getElementById('bill-effective').textContent = `प्रभावी दर: ${fmtMoney(m.effectivePerGram, !isGold)}/ग्राम · चयनित: ${m.selPurity.short} (${m.weight} ग्राम)`;
+
+      document.getElementById('bill-metal-lbl').textContent = `${m.selPurity.short} धातु का मूल्य (${m.weight}g × ${fmtMoney(m.selExGstPerGram, !isGold)} बिना GST)`;
+      document.getElementById('bill-metal-val').textContent = fmtINR2.format(m.metalValueExGst);
+
+      document.getElementById('bill-mc-lbl').textContent = state.makingMode === 'percent'
+        ? `मेकिंग चार्ज (${state.makingPct}%)`
+        : `मेकिंग चार्ज (₹${getActiveMakingFlat()}/ग्राम × ${m.weight}g)`;
+      document.getElementById('bill-mc-val').textContent = fmtINR2.format(m.makingVal);
+
+      document.getElementById('bill-subtotal').textContent = fmtINR2.format(m.subtotal);
+
+      if (!isTaxOn) {
+        document.getElementById('bill-gst-lbl').textContent = 'GST (स्पॉट मोड: लागू नहीं)';
+      } else if (state.gstOnMakingMode === 'composite_3') {
+        document.getElementById('bill-gst-lbl').textContent = `GST (3% — CGST ${fmtINR2.format(m.totalGst / 2)} + SGST ${fmtINR2.format(m.totalGst / 2)})`;
+      } else {
+        document.getElementById('bill-gst-lbl').textContent = `GST (धातु 3%: ${fmtINR0.format(m.gstOnMetal)} + मेकिंग 5%: ${fmtINR0.format(m.gstOnMaking)})`;
+      }
+      document.getElementById('bill-gst-val').textContent = fmtINR2.format(m.totalGst);
+      document.getElementById('bill-total-val').textContent = fmtINR2.format(m.finalPayable);
+
+      const denom = m.finalPayable > 0 ? m.finalPayable : 1;
+      const pSpot = (m.spotComponent / denom) * 100;
+      const pDuty = (m.dutyComponent / denom) * 100;
+      const pMaking = (m.makingVal / denom) * 100;
+      const pGst = (m.totalGst / denom) * 100;
+
+      const setSeg = (id, pct) => {
+        const el = document.getElementById(id);
+        el.style.width = `${pct.toFixed(1)}%`;
+        el.textContent = pct >= 8 ? `${Math.round(pct)}%` : '';
+      };
+      setSeg('seg-spot', pSpot);
+      setSeg('seg-duty', pDuty);
+      setSeg('seg-making', pMaking);
+      setSeg('seg-gst', pGst);
+
+      document.getElementById('leg-spot').textContent = fmtINR0.format(m.spotComponent);
+      document.getElementById('leg-duty').textContent = fmtINR0.format(m.dutyComponent);
+      document.getElementById('leg-making').textContent = fmtINR0.format(m.makingVal);
+      document.getElementById('leg-gst').textContent = fmtINR0.format(m.totalGst);
+
+      const stepsEl = document.getElementById('live-steps');
+      stepsEl.innerHTML = `
+        <div class="step-item">
+          <span class="step-num">स्टेप 1 · ट्रॉय औंस → INR</span>
+          <span class="step-title">USD से INR प्रति ट्रॉय औंस</span>
+          <span class="step-math num">$${m.spotUsd.toFixed(2)} × ₹${m.usdInr.toFixed(2)} = <strong>${fmtINR2.format(m.inrPerOzSpot)}</strong></span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">स्टेप 2 · प्रति ग्राम (${pureTag})</span>
+          <span class="step-title">31.1035 ग्राम से भाग दें</span>
+          <span class="step-math num">${fmtINR2.format(m.inrPerOzSpot)} ÷ 31.1035 = <strong>${fmtINR2.format(m.pureBasePerGram)}/g</strong></span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">स्टेप 3 · ड्यूटी (${m.dutyPct}%)</span>
+          <span class="step-title">भारत लैंडेड दर (बिना GST)</span>
+          <span class="step-math num">${fmtINR2.format(m.pureBasePerGram)} × ${(1 + m.dutyPct / 100).toFixed(4)} = <strong>${fmtINR2.format(m.pureExGstPerGram)}/g</strong></span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">स्टेप 4 · शुद्धता (${m.selPurity.short})</span>
+          <span class="step-title">${m.selPurity.formulaText}</span>
+          <span class="step-math num">${fmtINR2.format(m.pureExGstPerGram)} × ${m.selPurity.factor.toFixed(4)} = <strong>${fmtINR2.format(m.selExGstPerGram)}/g</strong></span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">स्टेप 5 · वज़न + मेकिंग</span>
+          <span class="step-title">${m.weight}g धातु + मेकिंग चार्ज</span>
+          <span class="step-math num">${fmtINR2.format(m.metalValueExGst)} + ${fmtINR2.format(m.makingVal)} = <strong>${fmtINR2.format(m.subtotal)}</strong></span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">स्टेप 6 · GST व अंतिम बिल</span>
+          <span class="step-title">${isTaxOn ? (state.gstOnMakingMode === 'composite_3' ? 'कुल पर 3% GST' : 'धातु 3% + मेकिंग 5%') : 'बिना टैक्स'}</span>
+          <span class="step-math num">${fmtINR2.format(m.subtotal)} + ${fmtINR2.format(m.totalGst)} = <strong>${fmtINR2.format(m.finalPayable)}</strong></span>
+        </div>
+      `;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('is-visible');
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => t.classList.remove('is-visible'), 2400);
+    }
+
+    // Auto-refresh interval manager
+    let refreshTimerId = null;
+    function startRefreshCountdown() {
+      if (refreshTimerId) clearInterval(refreshTimerId);
+      refreshTimerId = setInterval(() => {
+        if (!liveFeed.autoRefresh) return;
+        liveFeed.countdown -= 1;
+        if (liveFeed.countdown <= 0) {
+          liveFeed.countdown = 60;
+          fetchLiveRates(true);
+        }
+        const cdEl = document.getElementById('refresh-countdown');
+        if (cdEl) cdEl.textContent = String(liveFeed.countdown);
+      }, 1000);
+    }
+
+    // Event Listeners
+    elBtnCityPatna.addEventListener('click', () => { state.city = 'patna'; renderLiveBanner(); });
+    elBtnCityDelhi.addEventListener('click', () => { state.city = 'delhi'; renderLiveBanner(); });
+
+    elBtnAutoRefresh.addEventListener('click', () => {
+      liveFeed.autoRefresh = !liveFeed.autoRefresh;
+      liveFeed.countdown = 60;
+      elBtnAutoRefresh.innerHTML = liveFeed.autoRefresh
+        ? 'ऑटो-रिफ्रेश: चालू (<span id="refresh-countdown" class="num">60</span>s)'
+        : 'ऑटो-रिफ्रेश: बंद';
+    });
+
+    elBtnRefreshNow.addEventListener('click', () => {
+      liveFeed.countdown = 60;
+      fetchLiveRates(true);
+      showToast('लाइव रेट रिफ्रेश किया जा रहा है...');
+    });
+
+    elBtnGold.addEventListener('click', () => {
+      if (state.metal === 'gold') return;
+      state.metal = 'gold';
+      configureControlsForMetal();
+      renderAll();
+    });
+
+    elBtnSilver.addEventListener('click', () => {
+      if (state.metal === 'silver') return;
+      state.metal = 'silver';
+      configureControlsForMetal();
+      renderAll();
+    });
+
+    elBtnTaxOn.addEventListener('click', () => { state.taxMode = 'tax_on'; renderAll(); });
+    elBtnTaxOff.addEventListener('click', () => { state.taxMode = 'spot_only'; renderAll(); });
+
+    elSlSpot.addEventListener('input', () => {
+      const v = parseFloat(elSlSpot.value) || 0;
+      if (state.metal === 'gold') state.spotGold = v; else state.spotSilver = v;
+      elInSpot.value = v.toFixed(2);
+      renderAll();
+    });
+    elInSpot.addEventListener('input', () => {
+      const v = Math.max(0, parseFloat(elInSpot.value) || 0);
+      if (state.metal === 'gold') state.spotGold = v; else state.spotSilver = v;
+      elSlSpot.value = String(clamp(v, parseFloat(elSlSpot.min), parseFloat(elSlSpot.max)));
+      renderAll();
+    });
+
+    elSlFx.addEventListener('input', () => {
+      state.usdInr = parseFloat(elSlFx.value) || 0;
+      elInFx.value = state.usdInr.toFixed(2);
+      renderAll();
+    });
+    elInFx.addEventListener('input', () => {
+      state.usdInr = Math.max(0, parseFloat(elInFx.value) || 0);
+      elSlFx.value = String(clamp(state.usdInr, 75, 110));
+      renderAll();
+    });
+
+    elSlBcd.addEventListener('input', () => {
+      state.bcdPct = parseFloat(elSlBcd.value) || 0;
+      elInBcd.value = String(state.bcdPct);
+      renderAll();
+    });
+    elInBcd.addEventListener('input', () => {
+      state.bcdPct = Math.max(0, parseFloat(elInBcd.value) || 0);
+      elSlBcd.value = String(clamp(state.bcdPct, 0, 20));
+      renderAll();
+    });
+
+    elSlAidc.addEventListener('input', () => {
+      state.aidcPct = parseFloat(elSlAidc.value) || 0;
+      elInAidc.value = String(state.aidcPct);
+      renderAll();
+    });
+    elInAidc.addEventListener('input', () => {
+      state.aidcPct = Math.max(0, parseFloat(elInAidc.value) || 0);
+      elSlAidc.value = String(clamp(state.aidcPct, 0, 10));
+      renderAll();
+    });
+
+    elSlWeight.addEventListener('input', () => {
+      const v = parseFloat(elSlWeight.value) || 1;
+      if (state.metal === 'gold') state.weightGold = v; else state.weightSilver = v;
+      elInWeight.value = String(v);
+      renderAll();
+    });
+    elInWeight.addEventListener('input', () => {
+      const v = Math.max(0.01, parseFloat(elInWeight.value) || 0.01);
+      if (state.metal === 'gold') state.weightGold = v; else state.weightSilver = v;
+      elSlWeight.value = String(clamp(v, parseFloat(elSlWeight.min), parseFloat(elSlWeight.max)));
+      renderAll();
+    });
+
+    elBtnMcPct.addEventListener('click', () => {
+      state.makingMode = 'percent';
+      configureMakingControls();
+      renderAll();
+    });
+    elBtnMcFlat.addEventListener('click', () => {
+      state.makingMode = 'flat';
+      configureMakingControls();
+      renderAll();
+    });
+
+    elSlMaking.addEventListener('input', () => {
+      const v = parseFloat(elSlMaking.value) || 0;
+      if (state.makingMode === 'percent') state.makingPct = v;
+      else if (state.metal === 'gold') state.makingFlatGold = v;
+      else state.makingFlatSilver = v;
+      elInMaking.value = String(v);
+      renderAll();
+    });
+    elInMaking.addEventListener('input', () => {
+      const v = Math.max(0, parseFloat(elInMaking.value) || 0);
+      if (state.makingMode === 'percent') state.makingPct = v;
+      else if (state.metal === 'gold') state.makingFlatGold = v;
+      else state.makingFlatSilver = v;
+      elSlMaking.value = String(clamp(v, parseFloat(elSlMaking.min), parseFloat(elSlMaking.max)));
+      renderAll();
+    });
+
+    elBtnGstComp.addEventListener('click', () => { state.gstOnMakingMode = 'composite_3'; renderAll(); });
+    elBtnGstJob.addEventListener('click', () => { state.gstOnMakingMode = 'separate_5'; renderAll(); });
+
+    elBtnReset.addEventListener('click', () => {
+      state = { ...DEFAULTS };
+      elSlFx.value = String(state.usdInr);
+      elInFx.value = state.usdInr.toFixed(2);
+      elSlBcd.value = String(state.bcdPct);
+      elInBcd.value = String(state.bcdPct);
+      elSlAidc.value = String(state.aidcPct);
+      elInAidc.value = String(state.aidcPct);
+      configureControlsForMetal();
+      renderLiveBanner();
+      renderAll();
+      showToast('सभी दरें सत्यापित डिफ़ॉल्ट पर रीसेट हो गई हैं।');
+    });
+
+    elBtnTheme.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      elBtnTheme.textContent = isDark ? 'डार्क मोड' : 'लाइट मोड';
+      try { localStorage.setItem('gs_calc_theme', isDark ? 'light' : 'dark'); } catch (e) {}
+    });
+
+    elBtnCopy.addEventListener('click', () => {
+      const m = computeMetrics(state);
+      const metalName = state.metal === 'gold' ? 'सोना (Gold)' : 'चांदी (Silver)';
+      const summary = [
+        `ज्वैलरी बिल अनुमान — ${metalName} (${m.selPurity.label})`,
+        `स्पॉट प्राइस: $${m.spotUsd.toFixed(2)}/oz | USD/INR: ₹${m.usdInr.toFixed(2)} | इम्पोर्ट ड्यूटी: ${m.dutyPct}%`,
+        `नेट वज़न: ${m.weight} ग्राम × ${fmtINR2.format(m.selExGstPerGram)}/g (बिना GST) = ${fmtINR2.format(m.metalValueExGst)}`,
+        `मेकिंग चार्ज: ${fmtINR2.format(m.makingVal)}`,
+        `टैक्सेबल वैल्यू: ${fmtINR2.format(m.subtotal)}`,
+        `GST: ${fmtINR2.format(m.totalGst)}`,
+        `कुल देय बिल: ${fmtINR2.format(m.finalPayable)} (प्रभावी दर: ${fmtINR2.format(m.effectivePerGram)}/ग्राम)`
+      ].join('\n');
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(summary).then(() => {
+          showToast('बिल का विवरण कॉपी हो गया!');
+        }).catch(() => fallbackCopy(summary));
+      } else {
+        fallbackCopy(summary);
+      }
+    });
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast('बिल का विवरण कॉपी हो गया!');
+      } catch (e) {
+        showToast('कॉपी करने में समस्या आई।');
+      }
+      document.body.removeChild(ta);
+    }
+
+    try {
+      const savedTheme = localStorage.getItem('gs_calc_theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        elBtnTheme.textContent = 'लाइट मोड';
+      }
+    } catch (e) {}
+
+    configureControlsForMetal();
+    renderLiveBanner();
+    renderAll();
+    startRefreshCountdown();
+    fetchLiveRates(true);
+  </script>
+</body>
+</html>
